@@ -7,11 +7,13 @@ struct GhostCLI: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "ghost",
         abstract: "The last mile for AI agents on macOS. Reads the accessibility tree for GUI-only apps.",
-        version: "0.3.0",
+        version: "0.4.0",
         subcommands: [
             ObserveCommand.self,
             InteractCommand.self,
             SnapshotCommand.self,
+            ExploreCommand.self,
+            QueryCommand.self,
             ServeCommand.self,
             TransportCommand.self,
             OverlayDemoCommand.self,
