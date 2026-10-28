@@ -27,16 +27,34 @@ ghost observe "System Settings"
 
 ## Install
 
+Requires macOS 13+ and Swift 5.9+. Build from source:
+
 ```bash
-# Build from source (macOS 13+, Swift 5.9+)
 git clone https://github.com/tylergibbs1/ghost.git
 cd ghost
 swift build -c release
 cp .build/release/ghost /usr/local/bin/
-
-# Grant accessibility permission when prompted
-# (System Settings > Privacy & Security > Accessibility)
 ```
+
+Grant accessibility permission when prompted (System Settings > Privacy & Security > Accessibility).
+
+## Quick start
+
+```bash
+ghost observe                     # list running apps
+ghost observe "System Settings"   # read one app's accessibility tree
+ghost serve --mcp                 # expose Ghost to an agent as an MCP server
+```
+
+---
+
+## What Ghost is not
+
+- **Not a replacement for bash.** Enforced with an app blocklist.
+- **Not a screenshot tool.** Never captures pixels.
+- **Not a macro recorder.** Semantic actions, not coordinate clicks.
+- **Not cross-platform (yet).** macOS first. Windows and Linux are future work.
+- **Not universal.** Custom-drawn UIs and games are out of scope.
 
 ---
 
@@ -184,7 +202,7 @@ echo '{"command":"interact","app":"Notes","action":"press","target":"About Notes
 
 ---
 
-## Permission System
+## Permission system
 
 Ghost uses a Claude Code-inspired permission model. Read operations are always free. Write operations require permission.
 
@@ -220,7 +238,7 @@ Rules use wildcard specifiers:
 
 Deny always wins. Settings hierarchy: managed > user (`~/.ghost/settings.json`) > project (`.ghost/settings.json`).
 
-### App Blocklist
+### App blocklist
 
 CLI apps return an error — use bash instead:
 ```bash
@@ -232,7 +250,7 @@ Blocked: Terminal, iTerm2, Ghostty, Warp, Alacritty, Kitty, and others.
 
 ---
 
-## Visual Overlay
+## Visual overlay
 
 Ghost can show what the agent is doing on screen in real time. Transparent, click-through window with Core Animation highlights.
 
@@ -285,13 +303,11 @@ ghost (2MB static binary)
     └── MCP/           — JSON-RPC 2.0 MCP server
 ```
 
-59 unit tests across 6 suites. All passing.
-
 ---
 
-## How It Works
+## How it works
 
-### Tree Pruning
+### Tree pruning
 
 The raw macOS AX tree is verbose (500+ nodes for a typical window). Ghost's 6-pass pruning pipeline strips it down to what matters:
 
@@ -302,7 +318,7 @@ The raw macOS AX tree is verbose (500+ nodes for a typical window). Ghost's 6-pa
 5. **Annotate state** — Add `(on)`, `(off)`, `(empty)`, `(selected)`, `(disabled)`
 6. **Truncate lists** — Cap at `max_items` with count summary
 
-### Element Resolution
+### Element resolution
 
 Paths like `"content > toggle > Wi-Fi"` are resolved through a fallback chain:
 
@@ -327,16 +343,13 @@ The result is a `.ghostmap` file — a JSON state graph with every reachable sta
 
 ---
 
-## What Ghost Is NOT
+## Development
 
-- **Not a replacement for bash.** Enforced with an app blocklist.
-- **Not a screenshot tool.** Never captures pixels.
-- **Not a macro recorder.** Semantic actions, not coordinate clicks.
-- **Not cross-platform (yet).** macOS first. Windows and Linux are future work.
-- **Not universal.** Custom-drawn UIs and games are out of scope.
-
----
+```bash
+swift build
+swift test   # 59 unit tests across 6 suites
+```
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).
